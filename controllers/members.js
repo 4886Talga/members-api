@@ -1,6 +1,10 @@
 const Member = require('../models/Member');
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
+const fs = require('fs');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const scraper = require('../scraper');
 
 //@desc Get all members
 //@route GET /api/v1/members
@@ -88,18 +92,26 @@ exports.getMember = asyncHandler(async (req, res, next) => {
   
 });
 
-//@desc Create new member
+//@desc Seed members from webscraping data
 //@route POST /api/v1/members
 //@access Private
-exports.createMember = asyncHandler(async (req, res, next) => {
+exports.createMembers = asyncHandler(async (req, res, next) => {
 
-        const member = await Member.create(req.body);
+    //Read JSON files
+    //const members = JSON.parse(fs.readFileSync('./members2.json', 'utf8'));
+      
+    //Import into DB
+    const result = await Member.create(await scraper.fetchData());
 
-        res.status(201).json({
-            success: true,
-            data: member
-        });    
+    console.log(result);
+ 
+
+    res.status(201).json({
+        success: true,
+        data: result
+    });    
 });
+
 
 //@desc Uppdate member
 //@route PUT /api/v1/members:id
@@ -121,19 +133,18 @@ exports.uppdateMember = asyncHandler(async (req, res, next) => {
 });
 
 
-//@desc Delete member
-//@route DELETE /api/v1/members/:id
+//@desc Delete members
+//@route DELETE /api/v1/members
 //@access Private
-exports.deleteMember = asyncHandler(async (req, res, next) => {
-        const member = await Member.findByIdAndDelete(req.params.id);
+exports.deleteMembers = asyncHandler(async (req, res, next) => {
+        const result = await Member.deleteMany();
 
-        if(!member) {
+        if(!result) {
             return next(
-                new ErrorResponse(`Member not found with ID of ${req.params.id}`, 404)
+                new ErrorResponse(`Problem with deleting all memmbers`, 404)
             );
         }
 
         res.status(200).json({success: true, dat: {} });
 
 });
-

@@ -4,7 +4,8 @@ const dotenv = require('dotenv');
 const morgan = require('morgan');//HTTP request logger middleware for node.js
 const connectDB = require('./config/db');
 const errorHandler = require('./middleware/error');
-
+const axios = require('axios');
+const cheerio = require('cheerio');
 
 //Load env vars
 dotenv.config({ path: './config/config.env'});

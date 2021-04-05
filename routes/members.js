@@ -2,9 +2,9 @@ const express = require('express');
 const { 
     getMembers,
     getMember,
-    createMember,
+    createMembers,
     uppdateMember,
-    deleteMember
+    deleteMembers
 } =require('../controllers/members');
 
 const router = express.Router();
@@ -12,13 +12,13 @@ const router = express.Router();
 router
     .route('/')
     .get(getMembers)
-    .post(createMember);
+    .post(createMembers)
+    .delete(deleteMembers);
 
 router
     .route('/:id')
     .get(getMember)
-    .put(uppdateMember)
-    .delete(deleteMember);
-
+    .put(uppdateMember);
+    
 
 module.exports = router;
